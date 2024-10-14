@@ -21,6 +21,8 @@ export class RegistrationInviteEventNotification extends EventNotification {
                 <p>You have been invited to join TwitSnap Team as an admin!<br> 
                 To perform your registration, please use the following token:<br><br>
                 <strong style="font-size: 1.2em; color: #007BFF;">${this.token}</strong><br><br></p>
+                <p>Click <a href="https://twitsnap-backoffice-g8xi.onrender.com/register">here</a> to start your registration process.<br><br></p>
+                <p>Remember that this token is valid for 24 hours. You can only register with the email address where you received the token.<br><br></p>
                 Cheers,<br>
                 The TwitSnap Team 😊</p>
                 <div style="text-align:left; margin-top:10px;">
