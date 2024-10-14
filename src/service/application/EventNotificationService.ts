@@ -1,10 +1,13 @@
 import {EventNotification} from "../domain/event/EventNotification";
 import {Notificator} from "../domain/notification/Notificator";
-import {RegistrationEventNotification} from "../domain/event/RegistrationEventNotification";
+import {RegistrationInviteEventNotification} from "../domain/event/RegistrationInviteEventNotification";
 import {InvalidArgumentsError} from "../domain/errors/InvalidArgumentsError";
 import {UnknownTypeError} from "./errors/UnknownTypeError";
 import {logger} from "../../utils/container";
 import {ResetPasswordNotification} from "../domain/event/ResetPasswordNotification";
+
+const REGISTRATION_INVITE_EVENT_TYPE = 'admin-invitation';
+const RESET_PASSWORD_EVENT_TYPE = 'reset-password';
 
 export class EventNotificationService {
     public createAndNotifyEventNotification = (eventNotificationType: string, destinations: string[], sender: string, notificator: Notificator, eventParams: {[key: string]: string }): void => {
@@ -15,20 +18,19 @@ export class EventNotificationService {
 
     private createEventNotification = (eventNotificationType: string, destinations: string[], sender: string, notificator: Notificator, eventParams: {[key: string]: string }): EventNotification => {
         switch (eventNotificationType) {
-            case 'registration':
-                return this.createRegistrationEventNotification(destinations, sender, notificator, eventParams);
-            case 'reset-password':
+            case REGISTRATION_INVITE_EVENT_TYPE:
+                return this.createRegistrationInviteEventNotification(destinations, sender, notificator, eventParams);
+            case RESET_PASSWORD_EVENT_TYPE:
                 return this.createResetPasswordNotification(destinations, sender, notificator, eventParams);
             default:
                 return this.throwError(`Unknown event type: ${eventNotificationType}`, new UnknownTypeError(`Unknown event type: ${eventNotificationType}`));
         }
     }
 
-    private createRegistrationEventNotification = (destinations: string[], sender: string, notificator: Notificator, eventParams: {[key: string]: string }): RegistrationEventNotification => {
-        const username = this.getParamOrError(eventParams, 'username');
-        const pin = this.getParamOrError(eventParams, 'pin');
+    private createRegistrationInviteEventNotification = (destinations: string[], sender: string, notificator: Notificator, eventParams: {[key: string]: string }): RegistrationInviteEventNotification => {
+        const token = this.getParamOrError(eventParams, 'token');
 
-        return new RegistrationEventNotification(notificator, destinations, sender, pin, username);
+        return new RegistrationInviteEventNotification(notificator, destinations, sender, token);
     }
 
     private createResetPasswordNotification = (destinations: string[], sender: string, notificator: Notificator, eventParams: {[key: string]: string }): ResetPasswordNotification => {
